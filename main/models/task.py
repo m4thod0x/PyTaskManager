@@ -1,6 +1,6 @@
 from django.db import models
-from user import User
-from tag import Tag
+from .user import User
+from .tag import Tag
 
 
 class Task(models.Model):
@@ -15,9 +15,13 @@ class Task(models.Model):
 
     title = models.CharField(max_length=60)
     description = models.TextField(max_length=250)
-    author = models.ForeignKey(User, on_delete=models.SET_NULL)
-    assignee = models.ForeignKey(User, on_delete=models.SET_NULL)
+    author = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="main_user_author"
+    )
+    assignee = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="main_user_assignee"
+    )
     expired_at = models.DateField()
     priority = models.IntegerField()
     state = models.CharField(max_length=20, default=States.NEW, choices=States.choices)
-    tags = models.ForeignKey(Tag, on_delete=models.SET_NULL)
+    tags = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
